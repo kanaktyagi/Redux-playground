@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
 import './App.css';
+import {connect} from 'react-redux'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component { 
+  render() {
+    return(
+      <div className="App">
+      <div className="age "><span>Age:{this.props.age}</span></div> 
+      <button onClick={this.props.onAgeUp}> Age Up:</button>
+      <button onClick={this.props.onAgeDown}> Age Down:</button>
+      <div> History:</div>
+      <ul>
+      {
+        this.props.history.map((his) => {
+         return( <li key={his.id} onClick={() => this.props.onDelItem(his.id)}>{his.age}</li>)
+        })
+      }
+      </ul>
+      </div>
+    )
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  console.log("state", state)
+  return {
+    age: state.age,
+    history: state.history,
+    delete: state.delete
+}
+}
+
+const mapDispatchToProps =(dispatch) => {
+  return {
+    onAgeUp: () => dispatch({type:'AGE_UP', value: 1}),
+    onAgeDown: () => dispatch({type:'AGE_DOWN', value:1 }),
+    onDelItem: (id) => dispatch({type:'DEL_ITEM', key: id})
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps) (App); 
