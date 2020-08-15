@@ -4,9 +4,19 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import {Provider} from 'react-redux'
-import {createStore, combineReducers} from 'redux'
+import {createStore, combineReducers, applyMiddleware} from 'redux'
 import reducerA from './store/reducerA'
 import reducerB from './store/reducerB'
+
+const logAction = store => {
+  return next => {
+    return action => {
+      const result = next(action);
+      console.log(`Caught in the middleware ${JSON.stringify(result)}`)
+      return result;
+    }
+  }
+}
 
 
 const rootReducer = combineReducers({
@@ -14,7 +24,7 @@ const rootReducer = combineReducers({
   rB: reducerB
 })
 
-const store = createStore(rootReducer)
+const store = createStore(rootReducer, applyMiddleware(logAction))
 
 ReactDOM.render(
   
